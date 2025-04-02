@@ -33,7 +33,29 @@ class AuthService {
     return { accessToken: accessToken, user: jwtPayload };
   }
 
-  public async signIn(requestBody: any) {}
+  public async signIn(requestBody: any) {
+    const { email, password } = requestBody;
+    const userByEmail = await UserModel.findOne({ email });
+    if (!userByEmail) {
+      throw new BadRequestException('Email or password is wrong');
+    }
+
+    // Check password in userByEmail.password and password
+    const isMatchPassword = await bcrypt.compare(password, userByEmail.password);
+    if (!isMatchPassword) {
+      throw new BadRequestException('Email or password is wrong');
+    }
+
+    const jwtPayload = {
+      _id: userByEmail._id.toString(),
+      name: userByEmail.name,
+      email: userByEmail.email
+    };
+
+    const accessToken = await jwtProvider.generateJWT(jwtPayload);
+
+    return { accessToken: accessToken, user: jwtPayload };
+  }
 }
 
 export const authService: AuthService = new AuthService();

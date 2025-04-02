@@ -5,14 +5,12 @@ import { UserModel } from '../models/user.model';
 
 class AuthController {
   public async signUp(req: Request, res: Response) {
-    // await authService.signUp('abc');
+    const data = await authService.signUp(req.body);
 
-    const newUser = new UserModel({
-      name: 'John',
-      email: 'john@gmail.com',
-      password: 'test1234'
+    return res.json({
+      message: 'Sign Up Successfully',
+      data
     });
-    await newUser.save();
   }
 
   public async signIn(req: Request, res: Response) {}

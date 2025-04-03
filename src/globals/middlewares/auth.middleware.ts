@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { BadRequestException, UnAuthorizedException } from '../cores/error.core';
+import { jwtProvider } from '../providers/jwt.provider';
 
 class AuthMiddleware {
   public async verifyUser(req: Request, res: Response, next: NextFunction) {
@@ -9,7 +10,13 @@ class AuthMiddleware {
       throw new UnAuthorizedException('You are not logged');
     }
 
-    next();
+    try {
+      const decodedUser = await jwtProvider.verifyJWT(token);
+
+      next();
+    } catch (error) {
+      throw new UnAuthorizedException('Please login again!');
+    }
   }
 }
 

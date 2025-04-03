@@ -1,4 +1,4 @@
-import { BadRequestException } from '~/globals/cores/error.core';
+import { BadRequestException, NotFoundException } from '~/globals/cores/error.core';
 import { UserModel } from '../models/user.model';
 import bcrypt from 'bcrypt';
 import { jwtProvider } from '~/globals/providers/jwt.provider';
@@ -57,6 +57,31 @@ class AuthService {
     const refreshToken = await jwtProvider.generateRefreshToken(jwtPayload);
 
     return { accessToken: accessToken, refreshToken, user: jwtPayload };
+  }
+
+  public async refreshToken(requestBody: any) {
+    const { refreshToken } = requestBody;
+    if (!refreshToken) {
+      throw new BadRequestException('Please provide refresh token!');
+    }
+
+    const userDecoded = await jwtProvider.verifyRefreshToken(refreshToken);
+
+    const user = await UserModel.findById(userDecoded._id);
+    if (!user) {
+      throw new NotFoundException('User does not exist');
+    }
+
+    // Generate new access token
+    const jwtPayload = {
+      _id: user._id.toString(),
+      name: user.name,
+      email: user.email
+    };
+
+    const accessToken = await jwtProvider.generateJWT(jwtPayload);
+
+    return accessToken;
   }
 }
 

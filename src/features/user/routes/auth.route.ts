@@ -10,5 +10,6 @@ authRoute.post('/sign-in', asyncWrapper(authController.signIn));
 authRoute.get('/me', asyncWrapper(authController.getCurrentUser));
 authRoute.post('/logout', asyncWrapper(authController.logout));
 authRoute.get('/protected', authMiddleware.verifyUser, asyncWrapper(authController.protected));
+authRoute.post('/refresh-token', asyncWrapper(authController.refreshToken));
 
 export default authRoute;

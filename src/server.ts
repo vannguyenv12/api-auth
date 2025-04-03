@@ -5,6 +5,7 @@ import appRoutes from './globals/routes/appRoutes';
 import { CustomError, NotFoundException } from './globals/cores/error.core';
 import HTTP_STATUS from './globals/constants/http.constant';
 import mongoose from 'mongoose';
+import cors from 'cors';
 
 class Server {
   private app: Application;
@@ -24,6 +25,11 @@ class Server {
   private setupMiddleware(): void {
     this.app.use(express.json());
     this.app.use(cookieParser());
+    this.app.use(
+      cors({
+        origin: process.env.CLIENT_URL! || '*'
+      })
+    );
   }
 
   private setupRoutes(): void {

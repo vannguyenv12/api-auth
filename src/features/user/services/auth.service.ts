@@ -29,8 +29,9 @@ class AuthService {
     };
 
     const accessToken = await jwtProvider.generateJWT(jwtPayload);
+    const refreshToken = await jwtProvider.generateRefreshToken(jwtPayload);
 
-    return { accessToken: accessToken, user: jwtPayload };
+    return { accessToken: accessToken, refreshToken, user: jwtPayload };
   }
 
   public async signIn(requestBody: any) {
@@ -53,8 +54,9 @@ class AuthService {
     };
 
     const accessToken = await jwtProvider.generateJWT(jwtPayload);
+    const refreshToken = await jwtProvider.generateRefreshToken(jwtPayload);
 
-    return { accessToken: accessToken, user: jwtPayload };
+    return { accessToken: accessToken, refreshToken, user: jwtPayload };
   }
 }
 

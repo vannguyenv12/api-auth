@@ -11,6 +11,10 @@ class JwtProvider {
     return JWT.sign(payload, process.env.JWT_SECRET!, { expiresIn: '1h' });
   }
 
+  public async generateRefreshToken(payload: JwtPayload) {
+    return JWT.sign(payload, process.env.RT_SECRET!, { expiresIn: '7d' });
+  }
+
   public async verifyJWT(token: string) {
     return JWT.verify(token, process.env.JWT_SECRET!) as UserPayload;
   }

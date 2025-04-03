@@ -29,6 +29,8 @@ class AuthController {
     });
   }
 
+  public async refreshToken(req: Request, res: Response) {}
+
   public async getCurrentUser(req: Request, res: Response) {}
 
   public async logout(req: Request, res: Response) {}

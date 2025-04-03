@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { BadRequestException, UnAuthorizedException } from '../cores/error.core';
+import { UnAuthorizedException } from '../cores/error.core';
 import { jwtProvider } from '../providers/jwt.provider';
 
 class AuthMiddleware {
@@ -12,6 +12,12 @@ class AuthMiddleware {
 
     try {
       const decodedUser = await jwtProvider.verifyJWT(token);
+
+      req.currentUser = {
+        _id: decodedUser._id,
+        name: decodedUser.name,
+        email: decodedUser.email
+      };
 
       next();
     } catch (error) {

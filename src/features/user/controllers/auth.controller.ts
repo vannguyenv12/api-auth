@@ -24,7 +24,8 @@ class AuthController {
 
   public async protected(req: Request, res: Response) {
     return res.status(HTTP_STATUS.OK).json({
-      message: 'This is a protected route'
+      message: `This is a protected route`,
+      data: req.currentUser
     });
   }
 

@@ -9,7 +9,7 @@ interface JwtPayload {
 
 class JwtProvider {
   public async generateJWT(payload: JwtPayload) {
-    return JWT.sign(payload, process.env.JWT_SECRET!, { expiresIn: '1h' });
+    return JWT.sign(payload, process.env.JWT_SECRET!, { expiresIn: '5s' });
   }
 
   public async generateRefreshToken(payload: JwtPayload) {

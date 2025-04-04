@@ -67,6 +67,10 @@ class AuthController {
 
     res.status(HTTP_STATUS.OK).json({ message: 'Logout Successfully' });
   }
+
+  public async forgotPassword(req: Request, res: Response) {
+    await authService.sendForgotPasswordToEmail(req.body);
+  }
 }
 
 export const authController: AuthController = new AuthController();

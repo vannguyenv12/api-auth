@@ -82,6 +82,14 @@ class AuthService {
 
     return { accessToken, user: jwtPayload };
   }
+
+  public async sendForgotPasswordToEmail(requestBody: any) {
+    const { email } = requestBody;
+    // Make userByEmail exist
+    // Create a resetPasswordToken (random string, number,...)
+    // Store resetPasswordExpired (10m)
+    // Send email
+  }
 }
 
 export const authService: AuthService = new AuthService();

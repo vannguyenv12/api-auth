@@ -9,7 +9,9 @@ class AuthController {
 
     res.cookie('refreshToken', data.refreshToken, {
       httpOnly: true, // Prevent access cookie from client
-      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      sameSite: 'strict', // prevent access cookie from another website
+      secure: process.env.NODE_ENV === 'production' // HTTPS
     });
 
     return res.status(HTTP_STATUS.OK).json({
@@ -26,7 +28,9 @@ class AuthController {
 
     res.cookie('refreshToken', data.refreshToken, {
       httpOnly: true, // Prevent access cookie from client
-      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      sameSite: 'strict', // prevent access cookie from another website
+      secure: process.env.NODE_ENV === 'production' // HTTPS
     });
 
     return res.status(HTTP_STATUS.OK).json({

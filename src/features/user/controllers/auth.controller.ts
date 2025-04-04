@@ -7,18 +7,34 @@ class AuthController {
   public async signUp(req: Request, res: Response) {
     const data = await authService.signUp(req.body);
 
+    res.cookie('refreshToken', data.refreshToken, {
+      httpOnly: true, // Prevent access cookie from client
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+    });
+
     return res.status(HTTP_STATUS.OK).json({
       message: 'Sign Up Successfully',
-      data
+      data: {
+        accessToken: data.accessToken,
+        user: data.user
+      }
     });
   }
 
   public async signIn(req: Request, res: Response) {
     const data = await authService.signIn(req.body);
 
+    res.cookie('refreshToken', data.refreshToken, {
+      httpOnly: true, // Prevent access cookie from client
+      maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+    });
+
     return res.status(HTTP_STATUS.OK).json({
       message: 'Sign In Successfully',
-      data
+      data: {
+        accessToken: data.accessToken,
+        user: data.user
+      }
     });
   }
 
@@ -30,7 +46,9 @@ class AuthController {
   }
 
   public async refreshToken(req: Request, res: Response) {
-    const data = await authService.refreshToken(req.body);
+    const refreshToken = req.cookies.refreshToken;
+
+    const data = await authService.refreshToken(refreshToken);
 
     return res.status(HTTP_STATUS.OK).json({
       message: 'Generate a new access token',

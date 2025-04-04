@@ -3,6 +3,7 @@ import { UserModel } from '../models/user.model';
 import bcrypt from 'bcrypt';
 import { jwtProvider } from '~/globals/providers/jwt.provider';
 import crypto from 'crypto';
+import { mailProvider } from '~/globals/providers/mail.provider';
 
 class AuthService {
   public async signUp(requestBody: any) {
@@ -100,8 +101,15 @@ class AuthService {
     user.resetPasswordExpired = resetPasswordExpired;
     await user.save();
 
-    console.log('check user', user);
+    const resetLink = `http://localhost:5173/reset-password?email=${user.email}&resetToken=${resetPasswordToken}`;
+
+    const html = `
+      <h1>Your Reset Password Request</h1>
+      <p>Please click into this link to reset the password: <a href=${resetLink}>Click here</a></p>
+    `;
+
     // Send email
+    await mailProvider.sendEmail({ to: user.email, subject: 'Your Reset Password Request', html });
   }
 }
 

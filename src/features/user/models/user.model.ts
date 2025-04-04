@@ -5,7 +5,7 @@ interface IUser {
   email: string;
   password: string;
   resetPasswordToken: string;
-  resetPasswordExpired: Date;
+  resetPasswordExpired: number;
 }
 
 const userSchema = new mongoose.Schema<IUser>({
@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema<IUser>({
   email: { type: String, required: true },
   password: { type: String, required: true },
   resetPasswordToken: { type: String, default: null },
-  resetPasswordExpired: { type: Date, default: null }
+  resetPasswordExpired: { type: Number, default: null }
 });
 
 export const UserModel = mongoose.model<IUser>('User', userSchema);

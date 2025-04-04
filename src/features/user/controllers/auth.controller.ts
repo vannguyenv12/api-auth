@@ -70,6 +70,8 @@ class AuthController {
 
   public async forgotPassword(req: Request, res: Response) {
     await authService.sendForgotPasswordToEmail(req.body);
+
+    res.status(HTTP_STATUS.OK).json({ message: 'Sent reset password to your email successfully!' });
   }
 }
 

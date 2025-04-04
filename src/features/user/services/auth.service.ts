@@ -2,6 +2,7 @@ import { BadRequestException, NotFoundException } from '~/globals/cores/error.co
 import { UserModel } from '../models/user.model';
 import bcrypt from 'bcrypt';
 import { jwtProvider } from '~/globals/providers/jwt.provider';
+import crypto from 'crypto';
 
 class AuthService {
   public async signUp(requestBody: any) {
@@ -86,8 +87,20 @@ class AuthService {
   public async sendForgotPasswordToEmail(requestBody: any) {
     const { email } = requestBody;
     // Make userByEmail exist
+    const user = await UserModel.findOne({ email });
+    if (!user) {
+      throw new NotFoundException('User does not exist');
+    }
     // Create a resetPasswordToken (random string, number,...)
     // Store resetPasswordExpired (10m)
+    const resetPasswordToken = crypto.randomBytes(10).toString('hex');
+    const resetPasswordExpired = Date.now() + 10 * 1000 * 60;
+
+    user.resetPasswordToken = resetPasswordToken;
+    user.resetPasswordExpired = resetPasswordExpired;
+    await user.save();
+
+    console.log('check user', user);
     // Send email
   }
 }

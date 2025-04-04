@@ -62,7 +62,11 @@ class AuthController {
 
   public async getCurrentUser(req: Request, res: Response) {}
 
-  public async logout(req: Request, res: Response) {}
+  public async logout(req: Request, res: Response) {
+    res.clearCookie('refreshToken');
+
+    res.status(HTTP_STATUS.OK).json({ message: 'Logout Successfully' });
+  }
 }
 
 export const authController: AuthController = new AuthController();

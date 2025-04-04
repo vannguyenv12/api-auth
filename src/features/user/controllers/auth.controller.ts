@@ -73,6 +73,12 @@ class AuthController {
 
     res.status(HTTP_STATUS.OK).json({ message: 'Sent reset password to your email successfully!' });
   }
+
+  public async resetPassword(req: Request, res: Response) {
+    await authService.resetPassword(req.body);
+
+    res.status(HTTP_STATUS.OK).json({ message: 'Reset password successfully' });
+  }
 }
 
 export const authController: AuthController = new AuthController();

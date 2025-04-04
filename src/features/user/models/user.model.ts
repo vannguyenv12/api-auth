@@ -4,8 +4,8 @@ interface IUser {
   name: string;
   email: string;
   password: string;
-  resetPasswordToken: string;
-  resetPasswordExpired: number;
+  resetPasswordToken?: string;
+  resetPasswordExpired?: number;
 }
 
 const userSchema = new mongoose.Schema<IUser>({

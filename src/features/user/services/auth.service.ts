@@ -111,6 +111,36 @@ class AuthService {
     // Send email
     await mailProvider.sendEmail({ to: user.email, subject: 'Your Reset Password Request', html });
   }
+
+  // 7:00 => expired: 7:10
+  // 7:11 >  7:10
+
+  public async resetPassword(requestBody: any) {
+    const { email, resetToken, newPassword, confirmNewPassword } = requestBody;
+
+    const user = await UserModel.findOne({ email, resetPasswordToken: resetToken });
+
+    if (!user?.resetPasswordToken || !user?.resetPasswordExpired) {
+      throw new BadRequestException('Please forgot password again!');
+    }
+
+    if (!user) {
+      throw new NotFoundException('User does not exist');
+    }
+
+    if (Date.now() > user.resetPasswordExpired!) {
+      throw new BadRequestException('Your reset password request already expired. Please try again!');
+    }
+
+    if (newPassword !== confirmNewPassword) {
+      throw new BadRequestException('Passwords are not the same');
+    }
+
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpired = undefined;
+    user.password = await bcrypt.hash(newPassword, 10);
+    await user.save();
+  }
 }
 
 export const authService: AuthService = new AuthService();

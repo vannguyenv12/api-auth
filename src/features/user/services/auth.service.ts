@@ -81,7 +81,7 @@ class AuthService {
 
     const accessToken = await jwtProvider.generateJWT(jwtPayload);
 
-    return accessToken;
+    return { accessToken, user: jwtPayload };
   }
 }
 

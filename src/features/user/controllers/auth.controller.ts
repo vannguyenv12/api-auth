@@ -30,13 +30,11 @@ class AuthController {
   }
 
   public async refreshToken(req: Request, res: Response) {
-    const accessToken = await authService.refreshToken(req.body);
+    const data = await authService.refreshToken(req.body);
 
     return res.status(HTTP_STATUS.OK).json({
       message: 'Generate a new access token',
-      data: {
-        accessToken
-      }
+      data
     });
   }
 

@@ -17,7 +17,8 @@ class AuthMiddleware {
       req.currentUser = {
         _id: decodedUser._id,
         name: decodedUser.name,
-        email: decodedUser.email
+        email: decodedUser.email,
+        roles: decodedUser.roles
       };
 
       next();

@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt';
 import { jwtProvider } from '~/globals/providers/jwt.provider';
 import crypto from 'crypto';
 import { mailProvider } from '~/globals/providers/mail.provider';
+import { RoleModel } from '~/features/role/models/role.model';
 
 class AuthService {
   public async signUp(requestBody: any) {
@@ -17,17 +18,25 @@ class AuthService {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    const teacherRole = await RoleModel.findOne({ name: 'teacher' });
+    if (!teacherRole) {
+      throw new NotFoundException('Role does not exist');
+    }
+
     const user = new UserModel({
       name,
       email,
       password: hashedPassword
     });
+    user.roles = [teacherRole];
     await user.save();
 
+    const roles = user.roles.map((role) => role.name);
     const jwtPayload = {
       _id: user._id.toString(),
       name: user.name,
-      email: user.email
+      email: user.email,
+      roles
     };
 
     const accessToken = await jwtProvider.generateJWT(jwtPayload);
@@ -38,7 +47,7 @@ class AuthService {
 
   public async signIn(requestBody: any) {
     const { email, password } = requestBody;
-    const userByEmail = await UserModel.findOne({ email });
+    const userByEmail = await UserModel.findOne({ email }).populate('roles');
     if (!userByEmail) {
       throw new BadRequestException('Email or password is wrong');
     }
@@ -49,10 +58,12 @@ class AuthService {
       throw new BadRequestException('Email or password is wrong');
     }
 
+    const roles = userByEmail.roles.map((role) => role.name);
     const jwtPayload = {
       _id: userByEmail._id.toString(),
       name: userByEmail.name,
-      email: userByEmail.email
+      email: userByEmail.email,
+      roles
     };
 
     const accessToken = await jwtProvider.generateJWT(jwtPayload);
@@ -68,16 +79,18 @@ class AuthService {
 
     const userDecoded = await jwtProvider.verifyRefreshToken(refreshToken);
 
-    const user = await UserModel.findById(userDecoded._id);
+    const user = await UserModel.findById(userDecoded._id).populate('roles');
     if (!user) {
       throw new NotFoundException('User does not exist');
     }
 
     // Generate new access token
+    const roles = user.roles.map((role) => role.name);
     const jwtPayload = {
       _id: user._id.toString(),
       name: user.name,
-      email: user.email
+      email: user.email,
+      roles
     };
 
     const accessToken = await jwtProvider.generateJWT(jwtPayload);

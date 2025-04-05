@@ -5,6 +5,7 @@ interface JwtPayload {
   _id: string;
   name: string;
   email: string;
+  roles: string[];
 }
 
 class JwtProvider {

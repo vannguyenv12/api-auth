@@ -2,6 +2,7 @@ interface UserPayload {
   _id: string;
   name: string;
   email: string;
+  roles: string;
 }
 
 interface ISendEmailPayload {

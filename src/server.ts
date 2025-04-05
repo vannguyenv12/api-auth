@@ -7,6 +7,7 @@ import HTTP_STATUS from './globals/constants/http.constant';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import { getAllRoutes } from './globals/utils/log-route';
+import { mapUrlToPermission } from './globals/utils/map-url-to-permission';
 
 class Server {
   private app: Application;
@@ -37,7 +38,9 @@ class Server {
   private setupRoutes(): void {
     appRoutes(this.app);
     const routes = getAllRoutes(this.app);
-    console.log('check routes', routes);
+    // console.log(routes);
+    // @ts-ignore
+    mapUrlToPermission(routes[2]);
   }
 
   private setupGlobalError(): void {

@@ -8,6 +8,12 @@ class RoleController {
 
     return res.status(HTTP_STATUS.OK).json({ message: 'Seed data successfully' });
   }
+
+  public async addRoleToUser(req: Request, res: Response) {
+    await roleService.addRoleToUser(req.body, req.params.userId);
+
+    return res.status(HTTP_STATUS.OK).json({ message: 'Add role to user successfully' });
+  }
 }
 
 export const roleController: RoleController = new RoleController();

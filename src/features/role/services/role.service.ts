@@ -1,5 +1,7 @@
 import { PermissionModel } from '~/features/permission/models/permission.model';
 import { RoleModel } from '../models/role.model';
+import { NotFoundException } from '~/globals/cores/error.core';
+import { UserModel } from '~/features/user/models/user.model';
 
 class RoleService {
   public async seedData() {
@@ -25,6 +27,31 @@ class RoleService {
     r3.permissions = [p3!, p4!, p5!];
 
     [r1, r2, r3].map(async (r) => await r.save());
+  }
+
+  public async addRoleToUser(requestBody: any, userId: string) {
+    const { roles } = requestBody;
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    // Clear previous role
+    user.roles = [];
+    await user.save();
+
+    // Add role to user
+    for (const roleName of roles) {
+      // manager
+      const role = await RoleModel.findOne({ name: roleName });
+      if (!role) {
+        throw new NotFoundException(`The role ${roleName} not found`);
+      }
+
+      user.roles.push(role);
+    }
+
+    await user.save();
   }
 }
 

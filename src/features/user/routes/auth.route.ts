@@ -13,5 +13,6 @@ authRoute.get('/protected', authMiddleware.verifyUser, asyncWrapper(authControll
 authRoute.post('/refresh-token', asyncWrapper(authController.refreshToken));
 authRoute.post('/forgot-password', asyncWrapper(authController.forgotPassword));
 authRoute.post('/reset-password', asyncWrapper(authController.resetPassword));
+authRoute.put('/update-profile', authMiddleware.verifyUser, asyncWrapper(authController.updateProfile));
 
 export default authRoute;

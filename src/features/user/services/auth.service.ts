@@ -141,6 +141,20 @@ class AuthService {
     user.password = await bcrypt.hash(newPassword, 10);
     await user.save();
   }
+
+  public async updateProfile(requestBody: any, currentUser: UserPayload) {
+    const { name } = requestBody;
+
+    const user = await UserModel.findById(currentUser._id);
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
+    user.name = name;
+    await user.save();
+
+    return user;
+  }
 }
 
 export const authService: AuthService = new AuthService();

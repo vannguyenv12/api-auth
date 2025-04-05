@@ -79,6 +79,12 @@ class AuthController {
 
     res.status(HTTP_STATUS.OK).json({ message: 'Reset password successfully' });
   }
+
+  public async updateProfile(req: Request, res: Response) {
+    const data = await authService.updateProfile(req.body, req.currentUser);
+
+    res.status(HTTP_STATUS.OK).json({ message: 'Update profile successfully', data });
+  }
 }
 
 export const authController: AuthController = new AuthController();

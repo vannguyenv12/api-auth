@@ -6,6 +6,7 @@ import { CustomError, NotFoundException } from './globals/cores/error.core';
 import HTTP_STATUS from './globals/constants/http.constant';
 import mongoose from 'mongoose';
 import cors from 'cors';
+import { getAllRoutes } from './globals/utils/log-route';
 
 class Server {
   private app: Application;
@@ -35,6 +36,8 @@ class Server {
 
   private setupRoutes(): void {
     appRoutes(this.app);
+    const routes = getAllRoutes(this.app);
+    console.log('check routes', routes);
   }
 
   private setupGlobalError(): void {

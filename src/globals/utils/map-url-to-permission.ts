@@ -1,8 +1,3 @@
-interface IRoutePayload {
-  method: 'POST' | 'GET' | 'PATCH' | 'PUT' | 'DELETE';
-  path: string;
-}
-
 export const mapUrlToPermission = (route: IRoutePayload) => {
   const actionMaps = {
     GET: 'VIEW',
@@ -20,6 +15,5 @@ export const mapUrlToPermission = (route: IRoutePayload) => {
     result += `_${segmentUpperCase}`;
   }
 
-  console.log('result', result);
   return result;
 };

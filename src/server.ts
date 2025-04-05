@@ -8,6 +8,7 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import { getAllRoutes } from './globals/utils/log-route';
 import { mapUrlToPermission } from './globals/utils/map-url-to-permission';
+import { permissionProvider } from './globals/providers/permission.provider';
 
 class Server {
   private app: Application;
@@ -37,10 +38,8 @@ class Server {
 
   private setupRoutes(): void {
     appRoutes(this.app);
-    const routes = getAllRoutes(this.app);
-    // console.log(routes);
-    // @ts-ignore
-    mapUrlToPermission(routes[2]);
+    // const routes = getAllRoutes(this.app);
+    // permissionProvider.initPermission(routes);
   }
 
   private setupGlobalError(): void {

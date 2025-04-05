@@ -1,6 +1,6 @@
 import { Application } from 'express';
 
-export const getAllRoutes = (app: Application): { method: string; path: string }[] => {
+export const getAllRoutes = (app: Application): IRoutePayload[] => {
   const routes: { method: string; path: string }[] = [];
 
   const routerStack = app._router.stack;
@@ -36,5 +36,5 @@ export const getAllRoutes = (app: Application): { method: string; path: string }
   return routes.map((route) => ({
     method: route.method,
     path: route.path.replace('/api/v1/', '')
-  }));
+  })) as IRoutePayload[];
 };

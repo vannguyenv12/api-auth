@@ -12,6 +12,11 @@ interface ISendEmailPayload {
   html: string;
 }
 
+interface IRoutePayload {
+  method: 'POST' | 'GET' | 'PATCH' | 'PUT' | 'DELETE';
+  path: string;
+}
+
 declare namespace Express {
   export interface Request {
     currentUser: UserPayload;

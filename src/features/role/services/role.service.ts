@@ -53,6 +53,12 @@ class RoleService {
 
     await user.save();
   }
+
+  public async getAll() {
+    const roles = await RoleModel.find().populate('permissions');
+
+    return roles;
+  }
 }
 
 export const roleService: RoleService = new RoleService();

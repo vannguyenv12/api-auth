@@ -9,6 +9,12 @@ class RoleController {
     return res.status(HTTP_STATUS.OK).json({ message: 'Seed data successfully' });
   }
 
+  public async getAll(req: Request, res: Response) {
+    const data = await roleService.getAll();
+
+    return res.status(HTTP_STATUS.OK).json({ message: 'Get all roles', data });
+  }
+
   public async addRoleToUser(req: Request, res: Response) {
     await roleService.addRoleToUser(req.body, req.params.userId);
 

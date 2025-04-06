@@ -1,5 +1,6 @@
 import { NotFoundException } from '~/globals/cores/error.core';
 import { PermissionModel } from '../models/permission.model';
+import { RoleModel } from '~/features/role/models/role.model';
 
 class PermissionService {
   public async seedData() {
@@ -43,6 +44,27 @@ class PermissionService {
     await permission.save();
 
     return permission;
+  }
+
+  public async addPermissionsToRole(requestBody: any, roleId: string) {
+    const { permissions } = requestBody;
+    const role = await RoleModel.findById(roleId);
+    if (!role) {
+      throw new NotFoundException('Role does not exist');
+    }
+
+    // Clear the previous permission in that role
+    role.permissions = [];
+
+    for (const permissionName of permissions) {
+      const permission = await PermissionModel.findOne({ name: permissionName });
+      if (!permission) {
+        throw new NotFoundException(`Permission ${permissionName} does not exist`);
+      }
+      role.permissions.push(permission);
+    }
+
+    await role.save();
   }
 }
 

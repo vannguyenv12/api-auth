@@ -15,6 +15,11 @@ class RoleController {
     return res.status(HTTP_STATUS.OK).json({ message: 'Get all roles', data });
   }
 
+  public async getDetail(req: Request, res: Response) {
+    const data = await roleService.getDetail(req.params.id);
+    return res.status(HTTP_STATUS.OK).json({ message: 'Get role detail', data });
+  }
+
   public async addRoleToUser(req: Request, res: Response) {
     await roleService.addRoleToUser(req.body, req.params.userId);
 

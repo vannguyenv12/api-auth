@@ -55,9 +55,19 @@ class RoleService {
   }
 
   public async getAll() {
-    const roles = await RoleModel.find().populate('permissions');
+    const roles = await RoleModel.find().select('-permissions -__v');
 
     return roles;
+  }
+
+  public async getDetail(id: string) {
+    const role = await RoleModel.findById(id).populate('permissions');
+
+    if (!role) {
+      throw new NotFoundException(`Role does not exist`);
+    }
+
+    return role;
   }
 }
 

@@ -8,5 +8,6 @@ const roleRoute = express.Router();
 roleRoute.post('/seed-data', roleController.seedData);
 roleRoute.post('/add-role/:userId', asyncWrapper(roleController.addRoleToUser));
 roleRoute.get('/', asyncWrapper(roleController.getAll));
+roleRoute.get('/:id', asyncWrapper(roleController.getDetail));
 
 export default roleRoute;

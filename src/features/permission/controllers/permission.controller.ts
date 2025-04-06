@@ -14,6 +14,11 @@ class PermissionController {
 
     return res.status(HTTP_STATUS.OK).json({ message: 'Get all permissions', data });
   }
+
+  public async updateName(req: Request, res: Response) {
+    const data = await permissionService.updateName(req.body, req.params.id);
+    return res.status(HTTP_STATUS.OK).json({ message: 'Update permission successfully', data });
+  }
 }
 
 export const permissionController: PermissionController = new PermissionController();

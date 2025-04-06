@@ -4,5 +4,6 @@ import { permissionController } from '../controllers/permission.controller';
 const permissionRoute = express.Router();
 
 permissionRoute.get('/', permissionController.getAll);
+permissionRoute.put('/:id', permissionController.updateName);
 
 export default permissionRoute;

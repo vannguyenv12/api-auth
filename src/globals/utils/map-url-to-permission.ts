@@ -8,7 +8,7 @@ export const mapUrlToPermission = (route: IRoutePayload) => {
   };
 
   let result = actionMaps[route.method];
-  const routeSegments = route.path.split('/');
+  const routeSegments = route.path.split('/').filter(Boolean);
   for (const segment of routeSegments) {
     const segmentUpperCase = segment.toUpperCase().replace(':', '').replace('-', '_');
 

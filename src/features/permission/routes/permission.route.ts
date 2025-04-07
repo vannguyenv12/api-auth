@@ -5,13 +5,14 @@ import { authMiddleware } from '~/globals/middlewares/auth.middleware';
 
 const permissionRoute = express.Router();
 
-permissionRoute.get(
-  '/',
-  authMiddleware.verifyUser,
+permissionRoute.use(authMiddleware.verifyUser); // authentication
+
+permissionRoute.get('/', authMiddleware.verifyPermission, asyncWrapper(permissionController.getAll));
+permissionRoute.put('/:id', authMiddleware.verifyPermission, asyncWrapper(permissionController.updateName));
+permissionRoute.post(
+  '/add-role/:roleId',
   authMiddleware.verifyPermission,
-  asyncWrapper(permissionController.getAll)
+  asyncWrapper(permissionController.addPermissionsToRole)
 );
-permissionRoute.put('/:id', asyncWrapper(permissionController.updateName));
-permissionRoute.post('/add-role/:roleId', asyncWrapper(permissionController.addPermissionsToRole));
 
 export default permissionRoute;

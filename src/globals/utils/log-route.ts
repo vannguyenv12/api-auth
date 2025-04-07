@@ -35,6 +35,6 @@ export const getAllRoutes = (app: Application): IRoutePayload[] => {
 
   return routes.map((route) => ({
     method: route.method,
-    path: route.path.replace('/api/v1/', '')
+    path: route.path.replace('/api/v1/', '').replace(/\/+$/, '')
   })) as IRoutePayload[];
 };

@@ -56,9 +56,19 @@ class AuthMiddleware {
     const userRoles = user.roles.map((role) => role.name);
     const roles = await RoleModel.find({
       name: { $in: userRoles }
+    }).populate('permissions');
+
+    const allPermissions = roles.flatMap((role) => role.permissions);
+    const method = req.method;
+    const path = req.originalUrl.replace('/api/v1/', '');
+
+    const hasPermission = allPermissions.some((perm) => {
+      return perm.method === method && perm.path === path;
     });
 
-    console.log('check roles', roles);
+    if (!hasPermission) {
+      return next(new ForbiddenException('You cannot perform this action'));
+    }
 
     return next();
   }

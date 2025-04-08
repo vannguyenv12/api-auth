@@ -3,11 +3,16 @@ import { mapUrlToPermission } from '../utils/map-url-to-permission';
 import { RoleModel } from '~/features/role/models/role.model';
 import { NotFoundException } from '../cores/error.core';
 
+const ignoredPaths = ['auth/sign-in', 'auth/signup', 'auth/refresh-token', 'roles/by'];
+
 class PermissionProvider {
   public async initPermission(routes: IRoutePayload[]) {
     await PermissionModel.deleteMany();
 
     for (const route of routes) {
+      if (ignoredPaths.some((path) => path === route.path)) {
+        continue;
+      }
       const permissionName = mapUrlToPermission(route);
       const permission = new PermissionModel({
         name: permissionName,

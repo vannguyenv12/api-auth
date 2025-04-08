@@ -36,11 +36,11 @@ class Server {
     );
   }
 
-  private setupRoutes(): void {
+  private async setupRoutes(): Promise<void> {
     appRoutes(this.app);
     // const routes = getAllRoutes(this.app);
-    // permissionProvider.initPermission(routes);
-    // permissionProvider.addAllPermsToAdmin();
+    // await permissionProvider.initPermission(routes);
+    // await permissionProvider.addAllPermsToAdmin();
   }
 
   private setupGlobalError(): void {

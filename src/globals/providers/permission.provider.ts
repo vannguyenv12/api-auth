@@ -1,5 +1,7 @@
 import { PermissionModel } from '~/features/permission/models/permission.model';
 import { mapUrlToPermission } from '../utils/map-url-to-permission';
+import { RoleModel } from '~/features/role/models/role.model';
+import { NotFoundException } from '../cores/error.core';
 
 class PermissionProvider {
   public async initPermission(routes: IRoutePayload[]) {
@@ -14,6 +16,20 @@ class PermissionProvider {
       });
       await permission.save();
     }
+  }
+  public async addAllPermsToAdmin() {
+    const permissions = await PermissionModel.find();
+    const adminRole = await RoleModel.findOne({ name: 'admin' });
+
+    if (!adminRole) {
+      throw new NotFoundException(`No admin role found`);
+    }
+
+    adminRole.permissions = [];
+
+    adminRole.permissions.push(...permissions);
+    await adminRole.save();
+    console.log('Add all permission to admin successfully!');
   }
 }
 

@@ -20,6 +20,13 @@ class RoleController {
     return res.status(HTTP_STATUS.OK).json({ message: 'Get role detail', data });
   }
 
+  public async getPerms(req: Request, res: Response) {
+    const roleNames = req.query.roleNames as string;
+    const roles = roleNames.split(',');
+    const data = await roleService.getPerms(roles);
+    return res.status(HTTP_STATUS.OK).json({ message: 'Get permissions by role', data });
+  }
+
   public async addRoleToUser(req: Request, res: Response) {
     await roleService.addRoleToUser(req.body, req.params.userId);
 

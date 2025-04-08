@@ -69,6 +69,14 @@ class RoleService {
 
     return role;
   }
+
+  public async getPerms(roles: string[]) {
+    const rolesDocs = await RoleModel.find({ name: { $in: roles } }).populate('permissions');
+
+    const permissions = rolesDocs.flatMap((role) => role.permissions);
+    const permissionsNames = permissions.map((perm) => perm.name);
+    return [...new Set(permissionsNames)];
+  }
 }
 
 export const roleService: RoleService = new RoleService();

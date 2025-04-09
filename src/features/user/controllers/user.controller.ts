@@ -16,6 +16,12 @@ class UserController {
 
     return res.status(HTTP_STATUS.OK).json({ message: '2FA QR', data });
   }
+
+  public async verifyTwoFaQR(req: Request, res: Response) {
+    const data = await userService.verifyTwoFaQR(req.body, req.headers['user-agent'] || '', req.currentUser);
+
+    return res.status(HTTP_STATUS.OK).json({ message: '2FA QR', data });
+  }
 }
 
 export const userController: UserController = new UserController();

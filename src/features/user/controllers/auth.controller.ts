@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { authService } from '../services/auth.service';
 import HTTP_STATUS from '~/globals/constants/http.constant';
 import { UserModel } from '../models/user.model';
+import { UserSessionModel } from '../models/user-session.model';
 
 class AuthController {
   public async signUp(req: Request, res: Response) {
@@ -24,7 +25,7 @@ class AuthController {
   }
 
   public async signIn(req: Request, res: Response) {
-    const data = await authService.signIn(req.body);
+    const data = await authService.signIn(req.body, req.headers['user-agent'] || '');
 
     res.cookie('refreshToken', data.refreshToken, {
       httpOnly: true, // Prevent access cookie from client
@@ -37,7 +38,8 @@ class AuthController {
       message: 'Sign In Successfully',
       data: {
         accessToken: data.accessToken,
-        user: data.user
+        user: data.user,
+        session: data.session
       }
     });
   }
@@ -64,6 +66,8 @@ class AuthController {
 
   public async logout(req: Request, res: Response) {
     res.clearCookie('refreshToken');
+
+    await UserSessionModel.deleteMany({ user: req.currentUser._id, device: req.headers['user-agent'] || '' });
 
     res.status(HTTP_STATUS.OK).json({ message: 'Logout Successfully' });
   }

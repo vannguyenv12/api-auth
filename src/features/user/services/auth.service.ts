@@ -5,6 +5,7 @@ import { jwtProvider } from '~/globals/providers/jwt.provider';
 import crypto from 'crypto';
 import { mailProvider } from '~/globals/providers/mail.provider';
 import { RoleModel } from '~/features/role/models/role.model';
+import { UserSessionModel } from '../models/user-session.model';
 
 class AuthService {
   public async signUp(requestBody: any) {
@@ -36,6 +37,7 @@ class AuthService {
       _id: user._id.toString(),
       name: user.name,
       email: user.email,
+      isEnabled2FA: user.isEnabled2FA,
       roles
     };
 
@@ -45,7 +47,7 @@ class AuthService {
     return { accessToken: accessToken, refreshToken, user: jwtPayload };
   }
 
-  public async signIn(requestBody: any) {
+  public async signIn(requestBody: any, device: string) {
     const { email, password } = requestBody;
     const userByEmail = await UserModel.findOne({ email }).populate('roles');
     if (!userByEmail) {
@@ -63,13 +65,24 @@ class AuthService {
       _id: userByEmail._id.toString(),
       name: userByEmail.name,
       email: userByEmail.email,
+      isEnabled2FA: userByEmail.isEnabled2FA,
       roles
     };
+
+    let userSession = await UserSessionModel.findOne({ user: jwtPayload._id });
+    if (!userSession) {
+      userSession = await UserSessionModel.create({
+        // This is invalid session => PLEASE ENTER OTP to access page
+        isValid: false,
+        device,
+        user: jwtPayload._id
+      });
+    }
 
     const accessToken = await jwtProvider.generateJWT(jwtPayload);
     const refreshToken = await jwtProvider.generateRefreshToken(jwtPayload);
 
-    return { accessToken: accessToken, refreshToken, user: jwtPayload };
+    return { accessToken: accessToken, refreshToken, user: jwtPayload, session: userSession };
   }
 
   public async refreshToken(refreshToken: string) {

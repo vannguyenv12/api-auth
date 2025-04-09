@@ -8,7 +8,7 @@ import { RoleModel } from '~/features/role/models/role.model';
 import { UserSessionModel } from '../models/user-session.model';
 
 class AuthService {
-  public async signUp(requestBody: any) {
+  public async signUp(requestBody: any, device: string) {
     const { name, email, password } = requestBody;
 
     const userByEmail = await UserModel.findOne({ email });
@@ -19,7 +19,7 @@ class AuthService {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const teacherRole = await RoleModel.findOne({ name: 'teacher' });
+    const teacherRole = await RoleModel.findOne({ name: 'admin' });
     if (!teacherRole) {
       throw new NotFoundException('Role does not exist');
     }
@@ -40,11 +40,20 @@ class AuthService {
       isEnabled2FA: user.isEnabled2FA,
       roles
     };
+    let userSession = await UserSessionModel.findOne({ user: jwtPayload._id });
+    if (!userSession) {
+      userSession = await UserSessionModel.create({
+        // This is invalid session => PLEASE ENTER OTP to access page
+        isValid: false,
+        device,
+        user: jwtPayload._id
+      });
+    }
 
     const accessToken = await jwtProvider.generateJWT(jwtPayload);
     const refreshToken = await jwtProvider.generateRefreshToken(jwtPayload);
 
-    return { accessToken: accessToken, refreshToken, user: jwtPayload };
+    return { accessToken: accessToken, refreshToken, user: jwtPayload, userSession };
   }
 
   public async signIn(requestBody: any, device: string) {

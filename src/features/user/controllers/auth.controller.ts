@@ -6,7 +6,7 @@ import { UserSessionModel } from '../models/user-session.model';
 
 class AuthController {
   public async signUp(req: Request, res: Response) {
-    const data = await authService.signUp(req.body);
+    const data = await authService.signUp(req.body, req.headers['user-agent'] || '');
 
     res.cookie('refreshToken', data.refreshToken, {
       httpOnly: true, // Prevent access cookie from client
@@ -19,7 +19,8 @@ class AuthController {
       message: 'Sign Up Successfully',
       data: {
         accessToken: data.accessToken,
-        user: data.user
+        user: data.user,
+        session: data.userSession
       }
     });
   }

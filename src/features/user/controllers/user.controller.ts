@@ -10,6 +10,12 @@ class UserController {
 
     return res.status(HTTP_STATUS.OK).json({ message: 'Get all users', data });
   }
+
+  public async getTwoFaQR(req: Request, res: Response) {
+    const data = await userService.getTwoFaQR(req.currentUser);
+
+    return res.status(HTTP_STATUS.OK).json({ message: '2FA QR', data });
+  }
 }
 
 export const userController: UserController = new UserController();

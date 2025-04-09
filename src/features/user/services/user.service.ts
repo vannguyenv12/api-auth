@@ -9,6 +9,8 @@ class UserService {
 
     return users;
   }
+
+  public async getTwoFaQR(currentUser: UserPayload) {}
 }
 
 export const userService: UserService = new UserService();

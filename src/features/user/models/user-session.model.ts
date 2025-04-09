@@ -13,4 +13,4 @@ const userSessionSchema = new mongoose.Schema<IUserSession>({
   user: { type: mongoose.Types.ObjectId, ref: 'User' }
 });
 
-export const TwoFactorKeyModel = mongoose.model<IUserSession>('UserSession', userSessionSchema);
+export const UserSessionModel = mongoose.model<IUserSession>('UserSession', userSessionSchema);

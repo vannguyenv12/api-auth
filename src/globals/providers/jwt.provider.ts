@@ -24,7 +24,7 @@ class JwtProvider {
 
   public async generateRefreshToken(payload: JwtPayload) {
     const jwtId = uuidv4();
-    redisClient.SET(`access_token:${jwtId}`, 'valid');
+    await redisClient.SET(`access_token:${jwtId}`, 'valid');
     await redisClient.SADD(`users:${payload._id}:refresh_tokens`, jwtId);
 
     return JWT.sign({ ...payload, jwtId }, process.env.RT_SECRET!, { expiresIn: '7d' });

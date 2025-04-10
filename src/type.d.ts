@@ -3,6 +3,7 @@ interface UserPayload {
   name: string;
   email: string;
   roles: string;
+  jwtId: string;
   isActive: boolean;
 }
 

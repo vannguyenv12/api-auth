@@ -4,6 +4,7 @@ import { jwtProvider } from '../providers/jwt.provider';
 import JWT from 'jsonwebtoken';
 import { RoleModel } from '~/features/role/models/role.model';
 import { UserModel } from '~/features/user/models/user.model';
+import { redisClient } from '../redis';
 
 class AuthMiddleware {
   public async verifyUser(req: Request, res: Response, next: NextFunction) {
@@ -16,12 +17,16 @@ class AuthMiddleware {
 
     try {
       const decodedUser = await jwtProvider.verifyJWT(token);
+      if (!decodedUser.isActive) {
+        return next(new ForbiddenException('This account is no longer active'));
+      }
 
       req.currentUser = {
         _id: decodedUser._id,
         name: decodedUser.name,
         email: decodedUser.email,
         roles: decodedUser.roles,
+        jwtId: decodedUser.roles,
         isActive: decodedUser.isActive
       };
 

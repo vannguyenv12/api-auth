@@ -37,6 +37,7 @@ class AuthService {
       _id: user._id.toString(),
       name: user.name,
       email: user.email,
+      isActive: user.isActive,
       isEnabled2FA: user.isEnabled2FA,
       roles
     };
@@ -74,6 +75,7 @@ class AuthService {
       _id: userByEmail._id.toString(),
       name: userByEmail.name,
       email: userByEmail.email,
+      isActive: userByEmail.isActive,
       isEnabled2FA: userByEmail.isEnabled2FA,
       roles
     };
@@ -112,6 +114,7 @@ class AuthService {
       _id: user._id.toString(),
       name: user.name,
       email: user.email,
+      isActive: user.isActive,
       roles
     };
 

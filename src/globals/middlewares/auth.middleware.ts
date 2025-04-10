@@ -21,7 +21,8 @@ class AuthMiddleware {
         _id: decodedUser._id,
         name: decodedUser.name,
         email: decodedUser.email,
-        roles: decodedUser.roles
+        roles: decodedUser.roles,
+        isActive: decodedUser.isActive
       };
 
       next();

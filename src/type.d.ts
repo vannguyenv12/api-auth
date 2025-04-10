@@ -3,6 +3,7 @@ interface UserPayload {
   name: string;
   email: string;
   roles: string;
+  isActive: boolean;
 }
 
 interface ISendEmailPayload {

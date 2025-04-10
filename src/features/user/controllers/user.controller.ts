@@ -22,6 +22,12 @@ class UserController {
 
     return res.status(HTTP_STATUS.OK).json({ message: '2FA QR', data });
   }
+
+  public async bannedUser(req: Request, res: Response) {
+    await userService.bannedUser(req.params.id);
+
+    return res.status(HTTP_STATUS.OK).json({ message: 'Banned user successfully' });
+  }
 }
 
 export const userController: UserController = new UserController();

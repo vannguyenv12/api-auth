@@ -67,6 +67,16 @@ class UserService {
 
     return data;
   }
+
+  public async bannedUser(userId: string) {
+    const user = await UserModel.findById(userId);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    user.isActive = false;
+    await user.save();
+  }
 }
 
 export const userService: UserService = new UserService();

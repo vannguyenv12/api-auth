@@ -3,6 +3,7 @@ import { authService } from '../services/auth.service';
 import HTTP_STATUS from '~/globals/constants/http.constant';
 import { UserModel } from '../models/user.model';
 import { UserSessionModel } from '../models/user-session.model';
+import { jwtProvider } from '~/globals/providers/jwt.provider';
 
 class AuthController {
   public async signUp(req: Request, res: Response) {
@@ -57,9 +58,19 @@ class AuthController {
 
     const data = await authService.refreshToken(refreshToken);
 
+    res.cookie('refreshToken', data.refreshToken, {
+      httpOnly: true, // Prevent access cookie from client
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      sameSite: 'strict', // prevent access cookie from another website
+      secure: process.env.NODE_ENV === 'production' // HTTPS
+    });
+
     return res.status(HTTP_STATUS.OK).json({
       message: 'Generate a new access token',
-      data
+      data: {
+        accessToken: data.accessToken,
+        user: data.user
+      }
     });
   }
 
@@ -69,6 +80,7 @@ class AuthController {
     res.clearCookie('refreshToken');
 
     await UserSessionModel.deleteMany({ user: req.currentUser._id, device: req.headers['user-agent'] || '' });
+    await jwtProvider.revokeTokens(req.currentUser._id);
 
     res.status(HTTP_STATUS.OK).json({ message: 'Logout Successfully' });
   }

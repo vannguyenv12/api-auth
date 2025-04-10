@@ -5,6 +5,7 @@ import { authenticator } from 'otplib';
 import qrcode from 'qrcode';
 import { UserSessionModel } from '../models/user-session.model';
 import { redisClient } from '~/globals/redis';
+import { jwtProvider } from '~/globals/providers/jwt.provider';
 
 class UserService {
   public async getAll() {
@@ -78,18 +79,7 @@ class UserService {
     user.isActive = false;
     await user.save();
 
-    // Revoke Token
-    const allValuesAccessToken = await redisClient.sMembers(`users:${user._id}:access_tokens`);
-    const allValuesRefreshToken = await redisClient.sMembers(`users:${user._id}:refresh_tokens`);
-
-    const allStringKeysToDelete = [
-      ...allValuesAccessToken.map((jwtId) => `access_token:${jwtId}`),
-      ...allValuesRefreshToken.map((jwtId) => `refresh_token:${jwtId}`)
-    ];
-    await redisClient.del(allStringKeysToDelete);
-
-    await redisClient.del(`users:${user._id}:access_tokens`);
-    await redisClient.del(`users:${user._id}:refresh_tokens`);
+    await jwtProvider.revokeTokens(user._id.toString());
   }
 }
 

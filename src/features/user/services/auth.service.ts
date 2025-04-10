@@ -118,9 +118,12 @@ class AuthService {
       roles
     };
 
-    const accessToken = await jwtProvider.generateJWT(jwtPayload);
+    await jwtProvider.revokeTokens(jwtPayload._id);
 
-    return { accessToken, user: jwtPayload };
+    const newAccessToken = await jwtProvider.generateJWT(jwtPayload);
+    const newRefreshToken = await jwtProvider.generateRefreshToken(jwtPayload);
+
+    return { accessToken: newAccessToken, refreshToken: newRefreshToken, user: jwtPayload };
   }
 
   public async sendForgotPasswordToEmail(requestBody: any) {

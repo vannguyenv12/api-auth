@@ -12,7 +12,20 @@ interface JwtPayload {
 }
 
 class JwtProvider {
-  public async revokeTokens() {}
+  public async revokeTokens(userId: string) {
+    // Revoke Token
+    const allValuesAccessToken = await redisClient.sMembers(`users:${userId}:access_tokens`);
+    const allValuesRefreshToken = await redisClient.sMembers(`users:${userId}:refresh_tokens`);
+
+    const allStringKeysToDelete = [
+      ...allValuesAccessToken.map((jwtId) => `access_token:${jwtId}`),
+      ...allValuesRefreshToken.map((jwtId) => `refresh_token:${jwtId}`)
+    ];
+    await redisClient.del(allStringKeysToDelete);
+
+    await redisClient.del(`users:${userId}:access_tokens`);
+    await redisClient.del(`users:${userId}:refresh_tokens`);
+  }
 
   public async generateJWT(payload: JwtPayload) {
     const jwtId = uuidv4();

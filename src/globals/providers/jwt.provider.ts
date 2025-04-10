@@ -1,5 +1,7 @@
 import JWT from 'jsonwebtoken';
 import { BadRequestException } from '../cores/error.core';
+import { v4 as uuidv4 } from 'uuid';
+import { redisClient } from '../redis';
 
 interface JwtPayload {
   _id: string;
@@ -11,11 +13,17 @@ interface JwtPayload {
 
 class JwtProvider {
   public async generateJWT(payload: JwtPayload) {
-    return JWT.sign(payload, process.env.JWT_SECRET!, { expiresIn: '1h' });
+    const jwtId = uuidv4();
+    redisClient.SET(`access_token:${jwtId}`, 'valid');
+
+    return JWT.sign({ ...payload, jwtId }, process.env.JWT_SECRET!, { expiresIn: '1h' });
   }
 
   public async generateRefreshToken(payload: JwtPayload) {
-    return JWT.sign(payload, process.env.RT_SECRET!, { expiresIn: '7d' });
+    const jwtId = uuidv4();
+    redisClient.SET(`access_token:${jwtId}`, 'valid');
+
+    return JWT.sign({ ...payload, jwtId }, process.env.RT_SECRET!, { expiresIn: '7d' });
   }
 
   public async verifyJWT(token: string) {

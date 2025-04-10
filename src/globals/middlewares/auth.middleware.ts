@@ -21,12 +21,18 @@ class AuthMiddleware {
         return next(new ForbiddenException('This account is no longer active'));
       }
 
+      const jwtIdInRedis = await redisClient.GET(`access_token:${decodedUser.jwtId}`);
+
+      if (!jwtIdInRedis) {
+        return next(new ForbiddenException('REVOKE_TOKEN'));
+      }
+
       req.currentUser = {
         _id: decodedUser._id,
         name: decodedUser.name,
         email: decodedUser.email,
         roles: decodedUser.roles,
-        jwtId: decodedUser.roles,
+        jwtId: decodedUser.jwtId,
         isActive: decodedUser.isActive
       };
 

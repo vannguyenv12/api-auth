@@ -1,4 +1,4 @@
-import { BadRequestException, NotFoundException } from '~/globals/cores/error.core';
+import { BadRequestException, ForbiddenException, NotFoundException } from '~/globals/cores/error.core';
 import { UserModel } from '../models/user.model';
 import bcrypt from 'bcrypt';
 import { jwtProvider } from '~/globals/providers/jwt.provider';
@@ -68,6 +68,10 @@ class AuthService {
     const isMatchPassword = await bcrypt.compare(password, userByEmail.password);
     if (!isMatchPassword) {
       throw new BadRequestException('Email or password is wrong');
+    }
+
+    if (!userByEmail.isActive) {
+      throw new ForbiddenException('You cannot go to application, please contact admin!');
     }
 
     const roles = userByEmail.roles.map((role) => role.name);
